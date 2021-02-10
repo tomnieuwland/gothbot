@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 class MinecraftCommandModule(BaseCommandModule):
-    def __init__(self, *, minecraft_host, minecraft_port):
+    def __init__(self, *, minecraft_host, minecraft_port, command_prefix):
         super().__init__()
         self.name = "MinecraftCommandModule"
         self.keywords = ["minecraft", "mc"]
@@ -26,6 +26,7 @@ class MinecraftCommandModule(BaseCommandModule):
             ],
         )
 
+        self.command_prefix = command_prefix
         self.host = minecraft_host
         self.port = minecraft_port
         self.ip_string = self.host if self.port == 25565 else f"{self.host}:{self.port}"
@@ -50,7 +51,7 @@ class MinecraftCommandModule(BaseCommandModule):
             await self._handle_players(message.channel)
         else:
             await message.channel.send(
-                f"Unknown command. Type `!gh {self.keywords[0]} help` to see available commands"
+                f"Unknown command. Type `{self.command_prefix} {self.keywords[0]} help` to see available commands"
             )
 
     async def _handle_help(self, channel: discord.TextChannel):
