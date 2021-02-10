@@ -1,7 +1,5 @@
 name: Publish Docker image
 on:
-  release:
-    types: [published]
   push:
     branches: [master]
 jobs:
@@ -18,5 +16,4 @@ jobs:
           password: ${{ secrets.REGISTRY_PASSWORD }}
           registry: registry.tomnieuw.land
           repository: tomnieuwland/gothbot
-          tags: latest 
           tag_with_ref: true
