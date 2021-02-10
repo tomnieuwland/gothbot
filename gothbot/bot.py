@@ -10,12 +10,12 @@ logger = logging.getLogger(__name__)
 
 
 class GothBot(discord.Client):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, command_prefix, **kwargs):
         self.command_modules = {}
         self.special_handlers = {}
         self._command_modules_list = []
 
-        self.COMMAND_PREFIX = "!gh"
+        self.COMMAND_PREFIX = command_prefix
 
         super().__init__(*args, **kwargs)
 
@@ -28,7 +28,10 @@ class GothBot(discord.Client):
         if message.author == self.user:
             return
 
-        if message.content == "!gh" or message.content == "!gh help":
+        if (
+            message.content == self.COMMAND_PREFIX
+            or message.content == f"{self.COMMAND_PREFIX} help"
+        ):
             await self._handle_help(message.channel)
 
         elif message.content.startswith(self.COMMAND_PREFIX):
@@ -36,7 +39,7 @@ class GothBot(discord.Client):
             logger.info(
                 f"Received command {message.content} from {message.author.name}"
             )
-            pattern = r"!gh ([A-z]*).*"
+            pattern = f"{self.COMMAND_PREFIX} ([A-z]*).*"
             re_search = re.search(pattern, message.content)
 
             if re_search is not None:
@@ -80,7 +83,7 @@ class GothBot(discord.Client):
         help_embed = discord.Embed(
             title="Gothbot Help",
             type="rich",
-            description="Use `!gh` with one of the following sub commands (ie `!gh <subcommand>`)",
+            description=f"Use `{self.COMMAND_PREFIX}` with one of the following sub commands (ie `{self.COMMAND_PREFIX} <subcommand>`)",
         )
 
         module_tuples = []
