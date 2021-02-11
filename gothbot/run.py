@@ -21,7 +21,7 @@ if __name__ == "__main__":
     else:
         logging.basicConfig(level=logging.INFO)
 
-    special_handlers = [NiceHandler()]
+    special_handlers = [NiceHandler(),BurtoHandler(),gammonHandler()]
 
     command_modules = []
 
