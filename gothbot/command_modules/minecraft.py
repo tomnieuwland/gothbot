@@ -1,4 +1,5 @@
 import logging
+import os
 
 import discord
 from mcstatus import MinecraftServer
@@ -9,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 class MinecraftCommandModule(BaseCommandModule):
-    def __init__(self, *, minecraft_host, minecraft_port, command_prefix):
+    def __init__(self, *, minecraft_host, minecraft_port):
         super().__init__()
         self.name = "MinecraftCommandModule"
         self.keywords = ["minecraft", "mc"]
@@ -26,7 +27,7 @@ class MinecraftCommandModule(BaseCommandModule):
             ],
         )
 
-        self.command_prefix = command_prefix
+        self.command_prefix = os.environ["COMMAND_PREFIX"]
         self.host = minecraft_host
         self.port = minecraft_port
         self.ip_string = self.host if self.port == 25565 else f"{self.host}:{self.port}"
@@ -75,7 +76,14 @@ class MinecraftCommandModule(BaseCommandModule):
 
     async def _handle_players(self, channel: discord.TextChannel):
         logger.debug("Handling minecraft player request")
-        query = self.server.query()
-        await channel.send(
-            f"""`{self.ip_string}` has the following players online: {', '.join(query.players.names)}"""
-        )
+        message = f"Could not fetch players for `{self.ip_string}`"
+        try:
+            query = self.server.query()
+            if query.players and query.players.names:
+                message = f"`{self.ip_string}` has the following players online: {', '.join(query.players.names)}"
+            else:
+                message = f"`{self.ip_string}` has no players online"
+        except Exception:
+            pass
+
+        await channel.send(message)
