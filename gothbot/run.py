@@ -30,7 +30,6 @@ if __name__ == "__main__":
             MinecraftCommandModule(
                 minecraft_host=os.environ.get("MINECRAFT_HOST"),
                 minecraft_port=os.environ.get("MINECRAFT_PORT"),
-                command_prefix=os.environ["COMMAND_PREFIX"],
             )
         )
     else:
