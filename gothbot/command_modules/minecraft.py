@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 class MinecraftCommandModule(BaseCommandModule):
-    def __init__(self, *, minecraft_host, minecraft_port):
+    def __init__(self, *, minecraft_host: str, minecraft_port: int):
         super().__init__()
         self.name = "MinecraftCommandModule"
         self.keywords = ["minecraft", "mc"]
@@ -79,7 +79,7 @@ class MinecraftCommandModule(BaseCommandModule):
         message = f"Could not fetch players for `{self.ip_string}`"
         try:
             query = self.server.query()
-            if query.players and query.players.names:
+            if query.players.names:
                 message = f"`{self.ip_string}` has the following players online: {', '.join(query.players.names)}"
             else:
                 message = f"`{self.ip_string}` has no players online"

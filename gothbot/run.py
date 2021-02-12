@@ -29,7 +29,7 @@ if __name__ == "__main__":
         command_modules.append(
             MinecraftCommandModule(
                 minecraft_host=os.environ.get("MINECRAFT_HOST"),
-                minecraft_port=os.environ.get("MINECRAFT_PORT"),
+                minecraft_port=int(os.environ.get("MINECRAFT_PORT")),
             )
         )
     else:
