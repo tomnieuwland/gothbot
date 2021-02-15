@@ -12,8 +12,9 @@ logger = logging.getLogger(__name__)
 class GothBot(discord.Client):
     def __init__(self, *args, command_prefix, **kwargs):
         self.command_modules = {}
-        self.special_handlers = {}
         self._command_modules_list = []
+
+        self.regex_handlers = []
 
         self.COMMAND_PREFIX = command_prefix
 
@@ -28,7 +29,7 @@ class GothBot(discord.Client):
         if message.author == self.user:
             return
 
-        if (
+        elif (
             message.content == self.COMMAND_PREFIX
             or message.content == f"{self.COMMAND_PREFIX} help"
         ):
@@ -51,9 +52,13 @@ class GothBot(discord.Client):
                     return
             await message.channel.send("Unknown command.")
 
-        elif message.content in self.special_handlers.keys():
-            # One of our special handlers wants to deal with this message
-            await self.special_handlers.get(message.content).handle(message)
+        else:
+            for re_handler in self.regex_handlers:
+                match = re.search(re_handler.pattern, message.content)
+                if match:
+                    await re_handler.handle(message)
+                    # We don't need to keep searching
+                    break
 
     def register_command_module(self, module_instance: BaseCommandModule):
         logger.info(f'Registering command module "{module_instance.name}"')
@@ -68,16 +73,9 @@ class GothBot(discord.Client):
 
         self._command_modules_list.append(module_instance)
 
-    def register_special_handler(self, handler_instance: BaseHandler):
-        logger.info(f'Registering special handler "{handler_instance.name}"')
-        for keyword in handler_instance.keywords:
-            existing_handler = self.special_handlers.get(keyword)
-            if existing_handler is not None:
-                raise RuntimeError(
-                    f'{handler_instance.name} tried to register keyword "{keyword}", but this keyword is already registered by {existing_handler.name}'
-                )
-            else:
-                self.special_handlers[keyword] = handler_instance
+    def register_regex_handler(self, handler_instance: BaseHandler):
+        logger.info(f'Registering regex handler "{handler_instance.name}"')
+        self.regex_handlers.append(handler_instance)
 
     async def _handle_help(self, channel: discord.TextChannel):
         help_embed = discord.Embed(

@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 from bot import GothBot
 
-from handlers.nice import NiceHandler
+from handlers.repeat import RepeatHandler
 
 from command_modules.minecraft import MinecraftCommandModule
 
@@ -21,7 +21,12 @@ if __name__ == "__main__":
     else:
         logging.basicConfig(level=logging.INFO)
 
-    special_handlers = [NiceHandler()]
+    regex_handlers = [
+        RepeatHandler(
+            r"^[nN]\s{0,2}[iI]\s{0,2}[cC]\s{0,2}[eE]\s{0,2}[!?]*$", name="NiceHandler"
+        ),
+        RepeatHandler(r"^fuck$", name="FuckHandler", cooldown_minutes=60),
+    ]
 
     command_modules = []
 
@@ -37,8 +42,8 @@ if __name__ == "__main__":
 
     client = GothBot(command_prefix=os.environ["COMMAND_PREFIX"])
 
-    for handler_instance in special_handlers:
-        client.register_special_handler(handler_instance)
+    for handler_instance in regex_handlers:
+        client.register_regex_handler(handler_instance)
 
     for command_module_instance in command_modules:
         client.register_command_module(command_module_instance)
