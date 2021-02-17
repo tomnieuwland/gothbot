@@ -12,7 +12,7 @@ Fork this repo, make a pull request, assuming your code isn't ass, adds somethin
 formatter and existing unittests, I'll merge it in.
 
 ### Deploying
-Unfortuately this thing is on (docker hub)[https://hub.docker.com/r/tomnieuwland/gothbot]. I highly suggest deploying
+Unfortuately this thing is on [docker hub](https://hub.docker.com/r/tomnieuwland/gothbot). I highly suggest deploying
 it using docker-compose. Your `docker-compose.yml` should have something like this in it
 
 ```dockerfile
@@ -24,8 +24,8 @@ gothbot:
     restart: unless-stopped
 ```
 
-You will need to supply it some environment variables to get this bad boy running. The bare minimum you need is your (own
-discord bot token)[https://discord.com/developers/applications] (mostly because I don't know how to shard bots or do 
+You will need to supply it some environment variables to get this bad boy running. The bare minimum you need is your [own
+discord bot token](https://discord.com/developers/applications) (mostly because I don't know how to shard bots or do 
 anything fancy yet, so you have to run a copy of this thing for yourself)
 
 You can find all enviroment variables in `.env.template`. If you really wanna know what each of them does, go read the
